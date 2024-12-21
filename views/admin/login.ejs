@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="/static/adminLogin.css" />
+    <style>
+        .flash-message {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.3s ease-in-out;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .flash-message svg {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .error-message {
+            background-color: #ffebee;
+            color: #d32f2f;
+            border-left: 4px solid #d32f2f;
+        }
+
+        .success-message {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #2e7d32;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+    
+<body>
+
+    
+    <form action="/admin/login" method="post" onsubmit="return formValidate()">
+        <h2>Admin Login</h2>
+    
+        <input type="email" name="email" class="text-field" placeholder="Enter email" id="email" required/>
+        <input type="password" name="password" class="text-field" placeholder="Password" id="password" required />
+        
+        <input type="submit" class="button" value="Log In" /><br><br>
+        <a href="/">Login</a>
+    </form>
+    
+    <script>
+        function formValidate() {
+            var email = document.getElementById("email").value;
+            var password = document.getElementById("password").value;
+
+            if (email.trim() === "" || password.trim() === "") {
+                // You can replace this with sweet alert or your preferred notification
+                alert("All fields are required");
+                return false;
+            }
+            return true;
+        }
+    </script>
+
+    <%- include('footer')-%>
+</body>
+</html>
