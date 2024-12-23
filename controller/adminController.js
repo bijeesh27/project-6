@@ -1,5 +1,5 @@
 const userSchema=require('../model/userModel')
-
+const bcrypt=require('bcrypt')
 
 
 const addUser=async (req,res) => {
@@ -8,10 +8,10 @@ const addUser=async (req,res) => {
         const {email,password} =req.body
         const user =  await userSchema.findOne({email})
         if (user) return res.render("admin/dashboard");
-        
+        const hashPassword=await bcrypt.hash(password,10)
             const newUser = new userSchema({
               email,
-              password,
+              password:hashPassword,
             });
         
             await newUser.save();
@@ -36,7 +36,7 @@ const editUser=async (req,res) => {
 
     if(user){
       user.email=email,
-       user.password=password
+       user.password=await bcrypt.hash(password,10)
        await user.save()
        res.redirect('/admin/dashboard')
     }else{
@@ -80,9 +80,9 @@ const admin= async (req, res) => {
   
         return res.render("admin/login");
   
-     
+      let isMatch= await bcrypt.compare(password,admin.password)
       //incorrect password//
-      if (admin.password !== password){
+      if (!isMatch){
         
         return res.render("admin/login");
       }
@@ -127,12 +127,13 @@ const admin= async (req, res) => {
 
 const loadLogin=async (req,res) => {
     try {
-        if(!req.session.isAdauth){
+        if(req.session.isAdauth){
+
+          res.redirect('/admin/dashboard')
             
-            res.render('admin/login')
         }
         else{
-            res.redirect('/admin/dashboard')
+          res.render('admin/login')
         }
     } catch (error) {
         

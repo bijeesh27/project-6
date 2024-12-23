@@ -9,6 +9,7 @@ const connectDB = require("./db/connectDB");
 
 
 
+app.use(nocache())
 
 app.set("view engine", "ejs");
 
@@ -17,7 +18,6 @@ app.set("views", "./views");
 app.use("/static", express.static(path.join(__dirname, "public")));
 
 app.use(express.urlencoded({ extended: true }));
-app.use(nocache())
 
 app.use(session({
   secret: 'keyboard cat',
@@ -27,15 +27,6 @@ app.use(session({
 
 app.use('/',userRoutes)
 app.use('/admin',adminRoutes)
-
-
-
-
-
-
-
-
-
 
 
 connectDB();

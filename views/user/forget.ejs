@@ -4,16 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <link rel="stylesheet" href="/static/forget.css">
 </head>
 <body>
     <div class="main">
-        <form action="/forget" method="post" ">
+        <form action="/forget" method="post" >
              <input id="email" type="email" name="email" placeholder="Email">
-            <input id="password" type="password" name="password" placeholder="Password">
+            <input id="password" type="password" name="password" placeholder="NewPassword">
             <input id="confirmPassword" type="password" name="confirmPassword" placeholder="confirmPassword">
             <button type="submit">change</button>
         </form>
     </div>
+    <script>
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelector('form').addEventListener('submit', formValidate);
+});
+
+function formValidate(e) {
+    e.preventDefault();
+
+    var email = document.getElementById('email').value;
+    var password = document.getElementById('password').value;
+    var confirmPassword = document.getElementById('confirmPassword').value;
+
+    if (email == "" || password == "" || confirmPassword == "") {
+        swal("All fields are required");
+        return false;
+    } else if (password != confirmPassword) {
+        swal("Passwords do not match");
+        return false;
+    }
+
+    e.target.submit();
+    return true;
+}
+
+    </script>
 </body>
 </html>

@@ -1,4 +1,5 @@
 const userSchema = require("../model/userModel");
+const bcrypt=require('bcrypt')
 
 
 
@@ -17,10 +18,11 @@ const registerUser = async (req, res) => {
     const user = await userSchema.findOne({ email });
     if (user)
       return res.render("user/login");
+    const hashPassword=await bcrypt.hash(password,10)
 
     const newUser = new userSchema({
       email,
-      password,
+      password:hashPassword,
     });
 
     await newUser.save();
@@ -44,9 +46,11 @@ const login = async (req, res) => {
 
       return res.render("user/login");
 
-   
+   let isMatch= await bcrypt.compare(password,user.password)
+
+   console.log(isMatch);
     //incorrect password//
-    if (user.password !== password){
+    if (!isMatch){
       
       return res.render("user/login");
     }
@@ -67,6 +71,17 @@ const login = async (req, res) => {
 const forgetPassword=async (req,res) => {
   try {
     
+   const {email,password} =req.body
+   console.log(email,password);
+
+    const user= await userSchema.findOne({email})
+
+    if(user){
+      user.password= await bcrypt.hash(password,10)
+      await user.save()
+    }else{
+      console.log("invalid user");
+    }
 
     res.redirect('/')
 
@@ -91,13 +106,14 @@ const loadRegister = async (req, res) => {
 
 const loadLogin = async (req, res) => {
   try{
-    if(!req.session.isAuth){
-
-      res.render("user/login");
-    }
-
-    else{
+    if(req.session.isAuth){
+      
       res.redirect('/home')
+    }
+    
+    else{
+      
+      res.render("user/login");
     }
 
   }catch (error){
