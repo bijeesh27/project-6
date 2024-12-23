@@ -19,8 +19,8 @@ router.post('/editUser/:id',adminController.editUser)
 
 router.get('/deleteUser/:id',adminController.deleteUser)
 
-router.get('/logout',adminController.logout)
 
+router.get('/logout',adminController.logout)
 
 
 

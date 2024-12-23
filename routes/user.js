@@ -15,4 +15,10 @@ router.get('/home',userController.loadHome)
 
 router.get('/logout',userController.logout)
 
+router.get('/forget',userController.loadForget)
+
+router.post('/forget',userController.forgetPassword)
+
+router.get('/forget',userController.loadForget)
+
 module.exports=router

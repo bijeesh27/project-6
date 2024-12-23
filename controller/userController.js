@@ -61,6 +61,23 @@ const login = async (req, res) => {
 };
 
 
+
+
+
+const forgetPassword=async (req,res) => {
+  try {
+    
+
+    res.redirect('/')
+
+  } catch (error) {
+    
+  }
+  
+}
+
+
+
 //user routing
 
 const loadRegister = async (req, res) => {
@@ -78,6 +95,7 @@ const loadLogin = async (req, res) => {
 
       res.render("user/login");
     }
+
     else{
       res.redirect('/home')
     }
@@ -100,6 +118,16 @@ const loadHome = async (req, res) => {
   }
 };
 
+
+const loadForget=async (req,res) => {
+  try {
+    res.render('user/forget')
+  } catch (error) {
+    
+  }
+  
+}
+
 const logout = async (req,res) => {
   try {
     req.session.destroy()
@@ -119,5 +147,7 @@ module.exports = {
   loadRegister,
   loadHome,
   login,
-  logout
+  logout,
+  forgetPassword,
+  loadForget
 };
