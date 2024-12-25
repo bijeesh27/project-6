@@ -6,7 +6,10 @@ const app = express();
 const userRoutes=require('./routes/user')
 const adminRoutes=require('./routes/admin');
 const connectDB = require("./db/connectDB");
+const flash=require('connect-flash')
 
+
+app.use(flash())
 
 
 app.use(nocache())

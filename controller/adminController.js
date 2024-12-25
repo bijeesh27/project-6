@@ -1,5 +1,6 @@
 const userSchema=require('../model/userModel')
 const bcrypt=require('bcrypt')
+const flash=require('connect-flash')
 
 
 const addUser=async (req,res) => {
@@ -16,6 +17,7 @@ const addUser=async (req,res) => {
         
             await newUser.save();
             console.log(newUser);
+            req.flash('message',"Add User Successfully")
             res.redirect('/admin/dashboard');
           } catch (error) {
             console.log("error occured while rendering the login page", error);
@@ -38,6 +40,7 @@ const editUser=async (req,res) => {
       user.email=email,
        user.password=await bcrypt.hash(password,10)
        await user.save()
+       req.flash('message',"Updated Successfully")
        res.redirect('/admin/dashboard')
     }else{
 
@@ -57,6 +60,7 @@ const deleteUser=async (req,res) => {
     const deleteUser=await userSchema.findByIdAndDelete(userId)
 
     console.log("delete fuction");
+    req.flash("message","Deleted Successfully")
     res.redirect('/admin/dashboard')
 
 
@@ -105,9 +109,11 @@ const admin= async (req, res) => {
 
   const loadDashboard=async (req,res) => {
     try {
+        const message=req.flash('message')
         if(req.session.isAdauth){
             let users = await userSchema.find({isAdmin:false}).sort({created_At:-1});
-            res.render('admin/dashboard',{users:users})
+
+            res.render('admin/dashboard',{users:users,message})
         }
         else{
             res.redirect('/admin')

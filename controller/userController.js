@@ -1,5 +1,6 @@
 const userSchema = require("../model/userModel");
 const bcrypt=require('bcrypt')
+const flash=require('connect-flash')
 
 
 
@@ -16,8 +17,10 @@ const registerUser = async (req, res) => {
     // console.log("password:", password);
 
     const user = await userSchema.findOne({ email });
-    if (user)
-      return res.render("user/login");
+    if (user){
+      req.flash("error","User Already Exists")
+      return res.redirect('/')
+  }
     const hashPassword=await bcrypt.hash(password,10)
 
     const newUser = new userSchema({
@@ -26,6 +29,7 @@ const registerUser = async (req, res) => {
     });
 
     await newUser.save();
+    req.flash("success","Successfully Registered")
     res.redirect('/');
   } catch (error) {
     console.log("error occured while rendering the login page", error);
@@ -42,17 +46,20 @@ const login = async (req, res) => {
     const { email, password } = req.body;
     const user = await userSchema.findOne({ email });
 
-    if (!user)
+    if (!user){
+      req.flash("error","No User Found")
+      return res.redirect("/");
 
-      return res.render("user/login");
+    }
+
 
    let isMatch= await bcrypt.compare(password,user.password)
 
    console.log(isMatch);
     //incorrect password//
     if (!isMatch){
-      
-      return res.render("user/login");
+      req.flash("error","Incorrect Password")
+      return res.redirect("/");
     }
       
       
@@ -79,11 +86,13 @@ const forgetPassword=async (req,res) => {
     if(user){
       user.password= await bcrypt.hash(password,10)
       await user.save()
+      req.flash('success','Password Change Successfully')
+      res.redirect('/')
     }else{
       console.log("invalid user");
+      req.flash("error","User Doesn't Exists")
+      res.redirect('/')
     }
-
-    res.redirect('/')
 
   } catch (error) {
     
@@ -105,7 +114,10 @@ const loadRegister = async (req, res) => {
 };
 
 const loadLogin = async (req, res) => {
+
   try{
+    const successMessage=req.flash("success")
+    const errorMessage=req.flash("error")
     if(req.session.isAuth){
       
       res.redirect('/home')
@@ -113,7 +125,7 @@ const loadLogin = async (req, res) => {
     
     else{
       
-      res.render("user/login");
+      res.render("user/login",{successMessage,errorMessage});
     }
 
   }catch (error){
