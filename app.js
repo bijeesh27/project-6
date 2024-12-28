@@ -3,16 +3,14 @@ const session = require("express-session");
 const nocache = require("nocache");
 const path = require("path");
 const app = express();
-const userRoutes=require('./routes/user')
-const adminRoutes=require('./routes/admin');
+const userRoutes = require("./routes/user");
+const adminRoutes = require("./routes/admin");
 const connectDB = require("./db/connectDB");
-const flash=require('connect-flash')
+const flash = require("connect-flash");
 
+app.use(flash());
 
-app.use(flash())
-
-
-app.use(nocache())
+app.use(nocache());
 
 app.set("view engine", "ejs");
 
@@ -22,15 +20,16 @@ app.use("/static", express.static(path.join(__dirname, "public")));
 
 app.use(express.urlencoded({ extended: true }));
 
-app.use(session({
-  secret: 'keyboard cat',
-  resave: false,
-  saveUninitialized: true,
-}))
+app.use(
+  session({
+    secret: "keyboard cat",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
-app.use('/',userRoutes)
-app.use('/admin',adminRoutes)
-
+app.use("/", userRoutes);
+app.use("/admin", adminRoutes);
 
 connectDB();
 
